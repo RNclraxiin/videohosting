@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <!-- improved mobile viewport: flexible, readable, touch optimized -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>Connected by Hearts · Xasuusteena Gaarka ah</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ==================== CINEMATIC CORE – SAME PREMIUM FEEL ==================== */
+        :root {
+            --primary-pink: rgba(255, 105, 180, 0.95);
+            --soft-pink: rgba(255, 182, 193, 0.9);
+            --deep-pink: rgba(219, 39, 119, 0.9);
+            --ivory: #FFFFF0;
+            --dark-bg: #0A0A0A;
+            --transition-premium: cubic-bezier(0.4, 0, 0.2, 1);
+            --touch-target: 44px; /* WCAG touch-friendly size */
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--dark-bg);
+            color: var(--ivory);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            font-size: 16px; /* base for rem, mobile-friendly */
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent; /* remove tap flash */
+        }
+        .background-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3;
+        }
+        .background-image {
+            width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-15185600814500-bf0f8d125f46') no-repeat center center;
+            background-size: cover; filter: brightness(0.7) contrast(1.2);
+        }
+        .background-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,105,180,0.6), rgba(255,182,193,0.4));
+            z-index: -2;
+        }
+        .intro-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10,10,10,0.95); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; flex-direction: column;
+        }
+        .hearts-storm-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
+        .real-heart {
+            position: absolute; width: 35px; height: 35px; opacity: 0;
+            filter: drop-shadow(0 0 15px var(--primary-pink));
+            animation: heartFloatToCenter 2.5s var(--transition-premium) forwards;
+            display: flex; justify-content: center; align-items: center; transform-origin: center;
+        }
+        .heart-shape {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            position: relative; transform: rotate(45deg); border-radius: 50% 50% 0 0;
+        }
+        .heart-shape::before, .heart-shape::after {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            border-radius: 50%;
+        }
+        .heart-shape::before { top: -50%; left: 0; }
+        .heart-shape::after { top: 0; left: -50%; }
+        .heart-inner-glow {
+            position: absolute; width: 60%; height: 60%;
+            background: rgba(255,255,255,0.3); border-radius: 50%;
+            top: 20%; left: 20%; filter: blur(5px);
+        }
+        .sparkle-trail {
+            position: absolute; width: 8px; height: 8px; background: white;
+            border-radius: 50%; filter: blur(1px); opacity: 0;
+            animation: sparkleTrailEffect 1.5s var(--transition-premium) forwards;
+        }
+        .central-hearts-cluster {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            display: flex; justify-content: center; align-items: center;
+            animation: heartsClusterForm 1s 2.5s var(--transition-premium) forwards;
+        }
+        .main-real-heart { width: 120px; height: 120px; position: relative; z-index: 2; animation: heartBeat 1.5s infinite var(--transition-premium); }
+        .main-heart-shape {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            position: relative; transform: rotate(45deg); border-radius: 50% 50% 0 0;
+            box-shadow: 0 0 70px var(--primary-pink);
+        }
+        .main-heart-shape::before, .main-heart-shape::after {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            border-radius: 50%;
+        }
+        .main-heart-shape::before { top: -50%; left: 0; }
+        .main-heart-shape::after { top: 0; left: -50%; }
+        .main-heart-glow {
+            position: absolute; width: 70%; height: 70%;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+            border-radius: 50%; top: 15%; left: 15%; filter: blur(10px);
+            animation: glowPulse 2s infinite alternate;
+        }
+        .satellite-real-heart { position: absolute; width: 35px; height: 35px; animation: satelliteOrbit 4s infinite linear; }
+        .container {
+            width: 100%; max-width: 1400px; padding: 20px;
+            display: none; flex-direction: column; align-items: center;
+            animation: fadeInUp 1s 4s forwards; opacity: 0;
+        }
+        .header { text-align: center; margin: 2rem 0 3rem; position: relative; width: 100%; }
+        .main-title {
+            font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 4.5rem); 
+            font-weight: 700; color: var(--ivory); margin-bottom: 0.5rem; 
+            text-shadow: 0 0 30px var(--primary-pink); letter-spacing: 2px; 
+            position: relative; display: inline-block; line-height: 1.2;
+        }
+        .main-title::after {
+            content: ''; position: absolute; bottom: -10px; left: 50%;
+            transform: translateX(-50%); width: min(300px, 80%); height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-pink), transparent);
+        }
+        .subtitle {
+            font-family: 'Cormorant Garamond', serif; font-size: clamp(1.3rem, 5vw, 1.8rem);
+            color: var(--soft-pink); margin-top: 1.2rem; font-weight: 300;
+            letter-spacing: 2px; font-style: italic; padding: 0 10px;
+        }
+        .center-hearts-cluster {
+            width: min(320px, 80vw); height: min(320px, 80vw); position: relative;
+            margin: 1.5rem 0 4rem; animation: clusterFloat 8s infinite var(--transition-premium);
+        }
+        .central-heart-main {
+            width: min(150px, 40vw); height: min(150px, 40vw); position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); animation: heartBeatGlow 2s infinite var(--transition-premium);
+        }
+        .heart-main-shape {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            position: relative; transform: rotate(45deg); border-radius: 50% 50% 0 0;
+            box-shadow: 0 0 60px var(--primary-pink);
+        }
+        .heart-main-shape::before, .heart-main-shape::after {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            border-radius: 50%;
+        }
+        .heart-main-shape::before { top: -50%; left: 0; }
+        .heart-main-shape::after { top: 0; left: -50%; }
+        .heart-main-glow {
+            position: absolute; width: 80%; height: 80%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            border-radius: 50%; top: 10%; left: 10%; filter: blur(15px);
+            animation: mainGlowPulse 3s infinite alternate;
+        }
+        .orbiting-real-heart { position: absolute; width: clamp(30px, 10vw, 50px); height: clamp(30px, 10vw, 50px); animation: orbitRealHeart 10s infinite linear; animation-delay: calc(var(--orbit-index) * -1.25s); }
+        .sparkle-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .heart-sparkle {
+            position: absolute; width: 8px; height: 8px; background: white;
+            border-radius: 50%; filter: blur(1px); opacity: 0;
+            animation: sparkleFlash 2s infinite; animation-delay: calc(var(--sparkle-index) * 0.2s);
+        }
+        .gallery-container { position: relative; width: 100%; min-height: 700px; display: flex; justify-content: center; align-items: center; }
+        .gallery-items {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+            width: 100%; max-width: 1300px; position: relative; z-index: 2; padding: 0 4px;
+        }
+        /* mobile-first: 2 columns, larger touch targets */
+        @media (min-width: 480px) { .gallery-items { gap: 20px; } }
+        @media (min-width: 768px) { .gallery-items { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1200px) { .gallery-items { grid-template-columns: repeat(4, 1fr); } }
+        .gallery-item {
+            position: relative; border-radius: 20px; overflow: hidden; cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.4s var(--transition-premium);
+            animation: fadeInScale 0.8s var(--transition-premium) forwards;
+            animation-delay: calc(var(--item-index) * 0.1s + 4s);
+            opacity: 0; transform: scale(0.95);
+            aspect-ratio: 1 / 1; /* square thumbnails, consistent */
+            background: var(--dark-bg); border: 2px solid transparent;
+        }
+        .gallery-item:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 0 20px 45px var(--primary-pink);
+            border-color: var(--primary-pink);
+        }
+        .item-media { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--transition-premium); position: relative; z-index: 2; }
+        .gallery-item:hover .item-media { transform: scale(1.08); }
+        .item-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px 12px;
+            background: linear-gradient(to top, rgba(10,10,10,0.98), rgba(10,10,10,0.4));
+            transform: translateY(0); /* always visible on mobile, better UX */
+            transition: transform 0.4s var(--transition-premium);
+            z-index: 3; display: flex; flex-direction: column; justify-content: flex-end;
+        }
+        /* on mobile, overlay always visible with gradient */
+        @media (max-width: 767px) {
+            .item-overlay { transform: translateY(0); padding: 12px 10px; }
+            .gallery-item:hover .item-overlay { transform: translateY(0); } /* no hover lift on mobile */
+            .gallery-item:hover { transform: scale(1); } /* subtle instead */
+        }
+        .item-title { font-family: 'Cormorant Garamond', serif; color: var(--ivory); font-size: 1.3rem; margin-bottom: 5px; font-weight: 600; line-height: 1.3; }
+        .item-description { font-size: 0.8rem; color: var(--soft-pink); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .video-indicator {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(0,0,0,0.7); width: 38px; height: 38px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--primary-pink); font-size: 1.1rem;
+            border: 2px solid var(--primary-pink); z-index: 3; backdrop-filter: blur(4px);
+        }
+        .connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .heart-string {
+            stroke: var(--primary-pink); stroke-width: 2; fill: none;
+            filter: drop-shadow(0 0 8px var(--primary-pink));
+            animation: stringGentleWave 6s infinite ease-in-out;
+            stroke-linecap: round; stroke-dasharray: 5,5;
+        }
+        /* ==================== 🌟 MODAL – SUPER MOBILE OPTIMIZED ==================== */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6,6,6,0.98); backdrop-filter: blur(30px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; pointer-events: none;
+            transition: opacity 0.4s var(--transition-premium);
+        }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            position: relative; width: 100%; height: 100%; max-width: 100%;
+            border-radius: 0; overflow: hidden; border: none;
+            background: rgba(10,10,10,0.98);
+            display: flex; flex-direction: column;
+        }
+        .modal-media-container {
+            width: 100%; flex: 1 1 60%; /* take 60% of height */
+            display: flex; justify-content: center; align-items: center;
+            background: #000; min-height: 0; /* flex overflow fix */
+        }
+        .modal-media {
+            width: 100%; height: 100%; object-fit: contain; border: none;
+        }
+        iframe.modal-media {
+            width: 100%; height: 100%; border: 0;
+        }
+        .modal-info {
+            padding: 24px 20px 30px; 
+            background: linear-gradient(to top, rgba(10,10,10,1), rgba(20,20,20,0.98));
+            flex: 0 1 auto; max-height: 40%; overflow-y: auto;
+            border-top: 2px solid var(--primary-pink);
+        }
+        .modal-title {
+            font-family: 'Cormorant Garamond', serif; color: var(--ivory); 
+            font-size: 2rem; margin-bottom: 12px; text-shadow: 0 0 20px var(--primary-pink);
+            line-height: 1.2;
+        }
+        .modal-description {
+            color: var(--soft-pink); font-size: 1.1rem; line-height: 1.7; 
+            font-weight: 350; letter-spacing: 0.3px;
+        }
+        .modal-nav {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 50px; height: 50px; background: rgba(219,39,119,0.3);
+            border: 2px solid var(--primary-pink); border-radius: 50%;
+            color: var(--ivory); font-size: 1.5rem;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.25s var(--transition-premium);
+            backdrop-filter: blur(12px); z-index: 2100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .modal-nav:hover { background: var(--primary-pink); transform: translateY(-50%) scale(1.1); }
+        .prev-btn { left: 12px; }
+        .next-btn { right: 12px; }
+        .close-modal {
+            position: absolute; top: 16px; right: 16px;
+            width: 50px; height: 50px; background: rgba(219,39,119,0.3);
+            border: 2px solid var(--primary-pink); border-radius: 50%;
+            color: var(--ivory); font-size: 1.6rem;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.25s var(--transition-premium);
+            backdrop-filter: blur(12px); z-index: 2200; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+        .close-modal:hover { background: var(--primary-pink); transform: scale(1.1); }
+        .music-control {
+            position: fixed; bottom: 25px; right: 25px;
+            width: 70px; height: 70px; background: rgba(255,105,180,0.2);
+            border: 2px solid var(--primary-pink); border-radius: 50%;
+            color: var(--ivory); font-size: 2rem;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.3s var(--transition-premium);
+            backdrop-filter: blur(15px); z-index: 100;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+        .floating-hearts { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .floating-real-heart { position: absolute; width: 25px; height: 25px; opacity: 0.1; filter: drop-shadow(0 0 10px var(--primary-pink)); animation: floatRealHeart 25s infinite linear; }
+        .floating-heart-shape {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            position: relative; transform: rotate(45deg); border-radius: 50% 50% 0 0;
+        }
+        .floating-heart-shape::before, .floating-heart-shape::after {
+            content: ''; position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
+            border-radius: 50%;
+        }
+        .floating-heart-shape::before { top: -50%; left: 0; }
+        .floating-heart-shape::after { top: 0; left: -50%; }
+
+        /* ==================== 💌 LOVE LETTERS – ULTRA READABLE MOBILE ==================== */
+        .love-letters-section {
+            width: 100%; max-width: 1200px; margin: 3rem 0 2rem; padding: 0 16px;
+            text-align: center;
+        }
+        .section-title {
+            font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 2.8rem);
+            color: var(--ivory); margin-bottom: 2rem; text-shadow: 0 0 20px var(--primary-pink);
+            position: relative; display: inline-block; line-height: 1.3;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: -10px; left: 50%;
+            transform: translateX(-50%); width: 120px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-pink), transparent);
+        }
+        .letters-container {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 30px; width: 100%;
+        }
+        .letter-card {
+            background: rgba(255, 105, 180, 0.1); backdrop-filter: blur(8px);
+            border: 2px solid var(--primary-pink); border-radius: 30px;
+            padding: 30px 22px; width: 100%; max-width: 600px;
+            box-shadow: 0 0 40px rgba(255,105,180,0.15);
+            transition: all 0.3s ease; position: relative;
+            text-align: left; margin: 0 auto;
+        }
+        .letter-card:hover { transform: translateY(-5px); box-shadow: 0 0 60px var(--primary-pink); }
+        .letter-card::before {
+            content: '❤️'; position: absolute; top: 16px; right: 20px;
+            font-size: 2rem; opacity: 0.2; animation: floatHeart 3s infinite;
+        }
+        .letter-header {
+            font-family: 'Cormorant Garamond', serif; font-size: 2.2rem;
+            color: var(--soft-pink); margin-bottom: 20px; border-bottom: 1px solid rgba(255,182,193,0.5);
+            padding-bottom: 10px; display: inline-block; font-weight: 600;
+        }
+        .letter-content {
+            font-size: 1.15rem; line-height: 1.85; color: var(--ivory);
+            white-space: pre-line; font-style: italic; word-break: break-word;
+            letter-spacing: 0.02em; font-weight: 350;
+        }
+        .special-date {
+            background: radial-gradient(circle at 30% 30%, rgba(255,105,180,0.2), rgba(219,39,119,0.1));
+            border: 2px solid var(--primary-pink); border-radius: 40px;
+            padding: 30px 20px; margin: 30px auto 20px;
+            display: block; width: 100%; max-width: 800px;
+            backdrop-filter: blur(6px); box-shadow: 0 0 50px rgba(255,105,180,0.3);
+            animation: dateGlow 3s infinite alternate;
+        }
+        .date-heart { font-size: 3rem; margin-bottom: 5px; animation: heartbeat 1.8s infinite; }
+        .special-date h3 {
+            font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 6vw, 2.2rem);
+            color: var(--ivory); margin-bottom: 10px; letter-spacing: 1px;
+        }
+        .special-date p {
+            font-size: 1.1rem; color: var(--soft-pink); line-height: 1.7;
+            max-width: 100%; padding: 0 5px;
+        }
+        strong { color: white; font-weight: 600; }
+
+        /* ---------- MOBILE ENHANCEMENTS – SUPER READABLE, EASY TOUCH ---------- */
+        @media (max-width: 767px) {
+            .container { padding: 12px; }
+            .header { margin: 1.5rem 0 2rem; }
+            .main-title { font-size: 2.4rem; letter-spacing: 1px; }
+            .subtitle { font-size: 1.2rem; margin-top: 1rem; }
+            .center-hearts-cluster { width: 220px; height: 220px; margin: 0.5rem 0 2.5rem; }
+            .central-heart-main { width: 100px; height: 100px; }
+            .orbiting-real-heart { width: 30px; height: 30px; }
+            
+            /* gallery fine-tuning */
+            .gallery-items { gap: 10px; }
+            .gallery-item { border-radius: 16px; }
+            .item-title { font-size: 1.1rem; margin-bottom: 3px; }
+            .item-description { font-size: 0.75rem; -webkit-line-clamp: 2; }
+            .video-indicator { width: 32px; height: 32px; font-size: 0.9rem; top: 8px; right: 8px; }
+            
+            /* LOVE LETTERS - maximum readability */
+            .letter-card { padding: 24px 18px; border-width: 1.5px; }
+            .letter-header { font-size: 1.9rem; }
+            .letter-content { font-size: 1.05rem; line-height: 1.8; }
+            .special-date { padding: 25px 16px; }
+            .special-date p { font-size: 1rem; }
+            
+            /* modal extra mobile */
+            .modal-content { flex-direction: column; }
+            .modal-media-container { flex: 0 0 55%; } /* more space for video */
+            .modal-info { padding: 20px 18px; }
+            .modal-title { font-size: 1.7rem; }
+            .modal-description { font-size: 1rem; }
+            .modal-nav { width: 44px; height: 44px; font-size: 1.2rem; }
+            .close-modal { width: 44px; height: 44px; font-size: 1.4rem; top: 12px; right: 12px; }
+            .music-control { width: 60px; height: 60px; font-size: 1.6rem; bottom: 20px; right: 20px; }
+        }
+
+        @media (max-width: 380px) {
+            .item-title { font-size: 0.95rem; }
+            .item-description { font-size: 0.7rem; }
+            .letter-content { font-size: 0.98rem; }
+            .modal-title { font-size: 1.5rem; }
+        }
+
+        /* remove SVG connections on mobile for performance & less clutter (optional but clean) */
+        @media (max-width: 767px) {
+            .connections { display: none; }
+        }
+
+        /* touch-friendly buttons */
+        button, .gallery-item, .modal-nav, .close-modal, .music-control {
+            touch-action: manipulation;
+        }
+
+        /* animations – unchanged */
+        @keyframes heartFloatToCenter { 0% { opacity: 0; transform: translate(var(--startX), var(--startY)) scale(0.3) rotate(0deg); } 20% { opacity: 1; } 70% { transform: translate(var(--midX), var(--midY)) scale(1.1) rotate(180deg); } 100% { opacity: 1; transform: translate(0,0) scale(1) rotate(360deg); } }
+        @keyframes sparkleTrailEffect { 0% { opacity: 0; transform: translate(var(--sparkleX), var(--sparkleY)) scale(0); } 30% { opacity: 1; transform: translate(calc(var(--sparkleX)*0.5), calc(var(--sparkleY)*0.5)) scale(1.2); } 100% { opacity: 0; transform: translate(0,0) scale(0); } }
+        @keyframes heartsClusterForm { 0% { transform: translate(-50%,-50%) scale(0); opacity: 0; } 70% { transform: translate(-50%,-50%) scale(1.2); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; } }
+        @keyframes satelliteOrbit { 0% { transform: rotate(0deg) translateX(100px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(100px) rotate(-360deg); } }
+        @keyframes heartBeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes glowPulse { 0% { opacity: 0.3; transform: scale(1); } 100% { opacity: 0.7; transform: scale(1.2); } }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInScale { to { opacity: 1; transform: scale(1); } }
+        @keyframes clusterFloat { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(3deg); } }
+        @keyframes heartBeatGlow { 0%,100% { transform: translate(-50%,-50%) scale(1); filter: drop-shadow(0 0 40px var(--primary-pink)); } 50% { transform: translate(-50%,-50%) scale(1.06); filter: drop-shadow(0 0 60px var(--primary-pink)); } }
+        @keyframes orbitRealHeart { 0% { transform: rotate(calc(var(--orbit-index)*45deg)) translateX(clamp(100px, 15vw, 140px)) rotate(calc(var(--orbit-index)*-45deg)); } 100% { transform: rotate(calc(var(--orbit-index)*45deg + 360deg)) translateX(clamp(100px, 15vw, 140px)) rotate(calc(var(--orbit-index)*-45deg - 360deg)); } }
+        @keyframes sparkleFlash { 0%,100% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1.3); } }
+        @keyframes stringGentleWave { 0%,100% { stroke-width: 2; opacity: 0.8; stroke-dashoffset: 0; } 50% { stroke-width: 2.5; opacity: 1; stroke-dashoffset: 10; } }
+        @keyframes floatRealHeart { 0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.1; } 90% { opacity: 0.1; } 100% { transform: translateY(-100px) translateX(calc(var(--move-x)*100vw)) rotate(360deg); opacity: 0; } }
+        @keyframes modalGlow { 0%,100% { box-shadow: 0 0 60px var(--primary-pink); } 50% { box-shadow: 0 0 80px rgba(255,105,180,0.8); } }
+        @keyframes mainGlowPulse { 0% { opacity: 0.2; transform: scale(1); } 100% { opacity: 0.5; transform: scale(1.3); } }
+        @keyframes dateGlow { 0% { box-shadow: 0 0 40px rgba(255,105,180,0.3); } 100% { box-shadow: 0 0 70px rgba(255,105,180,0.6); } }
+        @keyframes heartbeat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes floatHeart { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-10px) rotate(5deg); } }
+    </style>
+</head>
+<body>
+    <!-- Background layers -->
+    <div class="background-container">
+        <div class="background-image"></div>
+        <div class="background-overlay"></div>
+    </div>
+
+    <!-- Intro animation - 30 hearts with sparkles -->
+    <div class="intro-animation" id="introAnimation">
+        <div class="hearts-storm-container" id="heartsStorm">
+            <div class="central-hearts-cluster">
+                <div class="main-real-heart">
+                    <div class="main-heart-shape"><div class="main-heart-glow"></div></div>
+                </div>
+                <div class="satellite-real-heart" style="--orbit-index:0;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+                <div class="satellite-real-heart" style="--orbit-index:1;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+                <div class="satellite-real-heart" style="--orbit-index:2;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+                <div class="satellite-real-heart" style="--orbit-index:3;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating hearts background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- MAIN CONTENT – fully responsive, mobile-optimized -->
+    <div class="container" id="mainContainer">
+        <header class="header">
+            <h1 class="main-title">Connected by Hearts</h1>
+            <p class="subtitle">A Journey of Love, Light, and Endless Promise</p>
+        </header>
+
+        <!-- Central Hearts Cluster (scales on mobile) -->
+        <div class="center-hearts-cluster">
+            <div class="central-heart-main">
+                <div class="heart-main-shape"><div class="heart-main-glow"></div></div>
+                <div class="sparkle-container" id="sparkleContainer"></div>
+            </div>
+            <div class="orbiting-real-heart" style="--orbit-index:0;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:1;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:2;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:3;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:4;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:5;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:6;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+            <div class="orbiting-real-heart" style="--orbit-index:7;"><div class="heart-shape"><div class="heart-inner-glow"></div></div></div>
+        </div>
+
+        <!-- GALLERY – 7 Vimeo + 4 images, 2‑col on mobile, big touch zones -->
+        <div class="gallery-container">
+            <svg class="connections" id="connections"></svg>
+            <div class="gallery-items" id="galleryItems"></div>
+        </div>
+
+        <!-- ========== LOVE LETTERS – CRYSTAL CLEAR ON MOBILE ========== -->
+        <div class="love-letters-section">
+            <h2 class="section-title">Warqadaha Jacaylka</h2>
+            <div class="letters-container">
+                <!-- Maqdis's heartfelt letter -->
+                <div class="letter-card">
+                    <div class="letter-header">Maqdis</div>
+                    <p class="letter-content">
+                        "Waligey kuma fikirin qofbaa isbuucyo lgu jeclaan karaa oo ma aaminsaneen lkn waa aaminay mrkaa timid.
+                        Jaceylka aan kuu qabo ma aha hadal kaliya, waa dareen qoto dheer oo aan maalin walba jeclahay inaan kuu muujiyo.
+                        Waan ku jeclahay xppi, waana ku jeclaan doonaa.
+                        Marabo inaad iga fogaato ama aan ani kaa fogaado.
+                        Waxaad sabab unoqotey farxadeyda qoraal amaba hadal kuma soo koobi karo dareenkeyga.
+                        Muuqaalkaaga ,quruxdaada, dabeecadaada, hab dhaqankaaga all wax walboo kugu saabsan ayaan ka helay run ahaanti 
+                        Dee hadaan dhaho waxaan kuu qabaa qoraal ahaan u qoraa warqada iyo qalinka wxee noqonaayaan mid dhamaado iyo mid buuxsanta.
+                        I love you so much 4ever"
+                    </p>
+                </div>
+                <!-- Clraxiin's letter -->
+                <div class="letter-card">
+                    <div class="letter-header">Clraxiin</div>
+                    <p class="letter-content">
+                        "Maqadisey malabeey mideydiyeey 
+                        Markaan ku arko mamaleysankartid faraxada aan daremaaayo markasto idhola cadeyso faraxada ayaa isiyada 
+                        Farxadaada wateyda ma arkin qof adookale oo unkaan joogo hadaa mahad ladhao allihii ii ikasoo adiya umahad celin lahaanaa 
+                        Marwalob qalbigeyga ayaad kujirta ogow  rajadeda ayaa thy midkamid riyoyinkeyga yaathy 
+                        Hadafkeyga ayaad thy sideen midkale kula bara bar dhigaa xppti dunida majirto qof aan kajeclhy walidkeyga moyee inta kale adigaan kajeclahy maan isdhaheyni qof saan uawanagsan ayaad heli walaee inaa dumar wax dheerthy 
+                        Waligey waan kujeclandonaa inta nolosheyda kadiman boqoradeyda iyo hooyada ciyaalkeyga mustaqalk"
+                    </p>
+                </div>
+            </div>
+            <!-- Special date: 12 February 2025 – larger, bold, romantic -->
+            <div class="special-date">
+                <div class="date-heart">❤️</div>
+                <h3>12 February 2025</h3>
+                <p>
+                    Maalintii aan kula soo hadlay oo aan ku idhi <strong>"Maqdis seethy"</strong> – anigoo ogeyn inaad noqon doonto boqoradeyda iyo hooyada ciyaalkeyga. 
+                    Waa malin aan ilaabi doonin. Waxaan jeclaan lahaa in maalinta arooskeena ay noqoto <strong>12 February</strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL – redesigned for mobile fullscreen, video first, readable text -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal"><i class="fas fa-times"></i></button>
+            <button class="modal-nav prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+            <button class="modal-nav next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+            <div class="modal-media-container" id="modalMediaContainer"></div>
+            <div class="modal-info">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-description" id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Control (big touch zone)
+    <button class="music-control" id="musicControl"><i class="fas fa-music"></i></button>
+    <audio id="backgroundMusic" loop><source src="https://archive.org/embed/edd-sheeran-perfect-mp-3.pm" type="audio/mpeg"></audio> -->
+
+    <script>
+        // ============================================================
+        // 🖼️ GALLERY DATA – 7 VIMEO + 4 IMAGES (your precious memories)
+        // ============================================================
+        const galleryData = [
+            { id: 1, title: "Kulankii Kowaad", description: "Gesimmadii Maqdis – kulankeyna kowaad, waa marka ugu horeysey aan labtaada galo", type: "vimeo", src: "https://player.vimeo.com/video/1163916529", poster: "https://images.unsplash.com/photo-15185600814500-bf0f8d125f46?w=600", category: "meeting" },
+            { id: 2, title: "Farxad Qalbi", description: "Bal qiyaas sida ey qalbiyadeyna iskugu farxsanayeen waaaw ", type: "vimeo", src: "https://player.vimeo.com/video/1163916433", poster: "https://images.unsplash.com/photo-1518834103326-6d3eea1b7ab8?w=600", category: "happiness" },
+            { id: 3, title: "Farxad Okle", description: "Waxan raba farxadas okale odhamaan in aan kusiyo qali  ", type: "vimeo", src: "https://player.vimeo.com/video/1163916433", poster: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600", category: "promise" },
+            { id: 4, title: "Dancigayga", description: "Dancigaan wa danci aan ladhacey – marar badan ayan ku ceshceshty. Runto mafcno, xasuus gaar ah ayuu ileyhy", type: "vimeo", src: "https://player.vimeo.com/video/1163916501", poster: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600", category: "dance" },
+            { id: 5, title: "Shumis Qaas", description: "Shumiskaan qaas waye – kulankeyna 3-aad waye, umleyna. Mar walba waan xasuustaa", type: "vimeo", src: "https://player.vimeo.com/video/1163916529", poster: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600", category: "memories" },
+            { id: 6, title: "Kor Kuqado", description: "Malintaan waxey eheed marki ugu horey kor kuqado – waan ku farxay", type: "vimeo", src: "https://player.vimeo.com/video/1163916398", poster: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=600", category: "milestone" },
+            { id: 7, title: "Kulankii Ugu Dambeeye", description: "Malintaan waa kulankeyni ugu dambeye, hadana waxey umuqata innu aha kulan asan farxadiisa watey – waan sugayaa kan xiga ilaah haduu ina garsiyo ", type: "vimeo", src: "https://player.vimeo.com/video/1163926920", poster: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600", category: "last meeting" },
+            { id: 8, title: "Quruxleyda Camal", description: "Quruxleydaan camal ina idhasho ayaan raba qali – sian udawodo markaad iga maqanthy, si u qalbigeyga udremo ina ila jogto", type: "image", src: "https://lh3.googleusercontent.com/d/1f06seGekJ0zSgVCGAoXFjx3De2UsQv9B", category: "beauty" },
+            { id: 9, title: "Lajoogeena", description: "Lajoogeyna waxo kadhiganyhy – labadeyna qalbi oo wada shekeysanyo.", type: "image", src: "https://lh3.googleusercontent.com/d/11JE9kYx93RgcFbhDVBJ63oti4K4bxD3H", category: "together" },
+            { id: 10, title: "Isku Dubnaan", description: "Saan ayaan waligeynna ahaneynna – waan isku dubnaaneynna intey nololi jirto. Qalbigaada aya igu amintey, keyga ayaa kugu aminey. Aan is ilashano qali", type: "image", src: "https://lh3.googleusercontent.com/d/15Fi4e4YAQHVYbEfT0hDHDEs0vSZIGMOm", category: "forever" },
+            { id: 11, title: "Qalbi Waxthy", description: "Qalbi waxthy ruux aan said ujeclaadey – naftaada waa waxa ugu farxada badan ee aan heyto", type: "image", src: "https://lh3.googleusercontent.com/d/1ii_x3HGWLfwtgs2qk7diS--hdOq_Mkww", category: "love" }
+        ];
+
+        // ---------- DOM ELEMENTS ----------
+        const introAnimation = document.getElementById('introAnimation');
+        const heartsStorm = document.getElementById('heartsStorm');
+        const floatingHearts = document.getElementById('floatingHearts');
+        const sparkleContainer = document.getElementById('sparkleContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const galleryItems = document.getElementById('galleryItems');
+        const connections = document.getElementById('connections');
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('closeModal');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const modalMediaContainer = document.getElementById('modalMediaContainer');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDescription = document.getElementById('modalDescription');
+        const musicControl = document.getElementById('musicControl');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+
+        let currentMediaIndex = 0;
+        let isMusicPlaying = false;
+        let touchStartX = 0, touchEndX = 0;
+
+        // ---------- INIT ALL MAGIC ----------
+        function init() {
+            createRealHeartStormAnimation();
+            createFloatingHearts();
+            createHeartSparkles();
+            setTimeout(renderGallery, 2800);
+            setupEventListeners();
+        }
+
+        // 30 REAL HEARTS WITH SPARKLE TRAILS
+        function createRealHeartStormAnimation() {
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'real-heart';
+                const angle = (i / 30) * 2 * Math.PI;
+                const distance = 150;
+                const startX = Math.cos(angle) * distance + 'vw';
+                const startY = Math.sin(angle) * distance + 'vh';
+                const midAngle = angle + (Math.PI / 2);
+                const midX = Math.cos(midAngle) * (distance * 0.6) + 'vw';
+                const midY = Math.sin(midAngle) * (distance * 0.6) + 'vh';
+                heart.style.setProperty('--startX', startX);
+                heart.style.setProperty('--startY', startY);
+                heart.style.setProperty('--midX', midX);
+                heart.style.setProperty('--midY', midY);
+                heart.style.animationDelay = (i * 0.08) + 's';
+                const heartShape = document.createElement('div');
+                heartShape.className = 'heart-shape';
+                const innerGlow = document.createElement('div');
+                innerGlow.className = 'heart-inner-glow';
+                heartShape.appendChild(innerGlow);
+                heart.appendChild(heartShape);
+                heartsStorm.appendChild(heart);
+                const sparkleCount = 5 + Math.floor(Math.random() * 3);
+                for (let j = 0; j < sparkleCount; j++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle-trail';
+                    sparkle.style.setProperty('--sparkleX', (Math.random() * 80 - 40) + 'px');
+                    sparkle.style.setProperty('--sparkleY', (Math.random() * 80 - 40) + 'px');
+                    sparkle.style.animationDelay = (i * 0.08 + j * 0.03) + 's';
+                    sparkle.style.width = (4 + Math.random() * 6) + 'px';
+                    sparkle.style.height = sparkle.style.width;
+                    sparkle.style.background = Math.random() > 0.5 ? 'white' : 'rgba(255,182,193,0.8)';
+                    heart.appendChild(sparkle);
+                }
+            }
+            setTimeout(() => {
+                introAnimation.style.opacity = '0';
+                setTimeout(() => {
+                    introAnimation.style.display = 'none';
+                    mainContainer.style.display = 'flex';
+                }, 1000);
+            }, 4000);
+        }
+
+        // FLOATING BACKGROUND HEARTS
+        function createFloatingHearts() {
+            for (let i = 0; i < 25; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-real-heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.opacity = Math.random() * 0.15 + 0.03;
+                heart.style.animationDuration = (Math.random() * 40 + 20) + 's';
+                heart.style.animationDelay = Math.random() * 10 + 's';
+                heart.style.setProperty('--move-x', Math.random() * 2 - 1);
+                const size = Math.random() * 20 + 10;
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                const shape = document.createElement('div');
+                shape.className = 'floating-heart-shape';
+                heart.appendChild(shape);
+                floatingHearts.appendChild(heart);
+            }
+        }
+
+        // SPARKLES AROUND CENTRAL HEART
+        function createHeartSparkles() {
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'heart-sparkle';
+                sparkle.style.setProperty('--sparkle-index', i);
+                const radius = 160 + Math.random() * 40;
+                const angle = (i / 20) * 2 * Math.PI + Math.random() * 0.2;
+                const x = radius * Math.cos(angle);
+                const y = radius * Math.sin(angle);
+                sparkle.style.left = `calc(50% + ${x}px)`;
+                sparkle.style.top = `calc(50% + ${y}px)`;
+                sparkle.style.width = (6 + Math.random() * 8) + 'px';
+                sparkle.style.height = sparkle.style.width;
+                sparkleContainer.appendChild(sparkle);
+            }
+        }
+
+        // RENDER GALLERY THUMBNAILS – 2 columns mobile
+        function renderGallery() {
+            galleryItems.innerHTML = ''; // clear before render (ensures no duplicates)
+            galleryData.forEach((item, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.dataset.index = index;
+                galleryItem.style.setProperty('--item-index', index);
+                
+                if (item.type === 'image') {
+                    galleryItem.innerHTML = `
+                        <img src="${item.src}" alt="${item.title}" class="item-media" loading="lazy">
+                        <div class="item-overlay">
+                            <h3 class="item-title">${item.title}</h3>
+                            <p class="item-description">${item.description}</p>
+                        </div>
+                    `;
+                } else {
+                    galleryItem.innerHTML = `
+                        <img src="${item.poster}" alt="${item.title}" class="item-media" loading="lazy">
+                        <div class="video-indicator"><i class="fas fa-play"></i></div>
+                        <div class="item-overlay">
+                            <h3 class="item-title">${item.title}</h3>
+                            <p class="item-description">${item.description}</p>
+                        </div>
+                    `;
+                }
+                galleryItems.appendChild(galleryItem);
+            });
+            setTimeout(drawConnectionStrings, 100);
+        }
+
+        // SVG CONNECTIONS – disabled on mobile via CSS but still drawn for desktop
+        function drawConnectionStrings() {
+            if (window.innerWidth <= 767) return; // skip to save perf
+            const svgNS = "http://www.w3.org/2000/svg";
+            connections.innerHTML = '';
+            const centerElem = document.querySelector('.center-hearts-cluster');
+            if (!centerElem) return;
+            const centerX = window.innerWidth / 2;
+            const centerY = centerElem.getBoundingClientRect().top + centerElem.offsetHeight / 2 + window.scrollY;
+            
+            galleryData.forEach((_, index) => {
+                const galleryItem = document.querySelector(`.gallery-item[data-index="${index}"]`);
+                if (!galleryItem) return;
+                const rect = galleryItem.getBoundingClientRect();
+                const itemX = rect.left + rect.width / 2;
+                const itemY = rect.top + rect.height / 2 + window.scrollY;
+                const path = document.createElementNS(svgNS, 'path');
+                path.className = 'heart-string';
+                path.setAttribute('data-index', index);
+                const controlX = (centerX + itemX) / 2;
+                const controlY = Math.min(centerY, itemY) - 120;
+                path.setAttribute('d', `M ${centerX} ${centerY} Q ${controlX} ${controlY}, ${itemX} ${itemY}`);
+                connections.appendChild(path);
+            });
+        }
+
+        // ---------- MODAL CONTROL ----------
+        function openModal(index) {
+            currentMediaIndex = index;
+            const item = galleryData[index];
+            modalTitle.textContent = item.title;
+            modalDescription.textContent = item.description;
+            modalMediaContainer.innerHTML = '';
+            
+            if (item.type === 'image') {
+                const img = document.createElement('img');
+                img.src = item.src;
+                img.alt = item.title;
+                img.className = 'modal-media';
+                modalMediaContainer.appendChild(img);
+            } else {
+                const iframe = document.createElement('iframe');
+                iframe.src = item.src + '?autoplay=1&title=0&byline=0&portrait=0&badge=0';
+                iframe.className = 'modal-media';
+                iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+                iframe.allowFullscreen = true;
+                modalMediaContainer.appendChild(iframe);
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModalFunc() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            const iframe = modalMediaContainer.querySelector('iframe');
+            if (iframe) {
+                const src = iframe.src;
+                iframe.src = '';
+                iframe.src = src;
+            }
+        }
+
+        function prevMedia() {
+            currentMediaIndex = (currentMediaIndex - 1 + galleryData.length) % galleryData.length;
+            openModal(currentMediaIndex);
+        }
+        function nextMedia() {
+            currentMediaIndex = (currentMediaIndex + 1) % galleryData.length;
+            openModal(currentMediaIndex);
+        }
+
+        // ---------- MUSIC ----------
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+                musicControl.innerHTML = '<i class="fas fa-music"></i>';
+            } else {
+                backgroundMusic.play().catch(() => {});
+                musicControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // ---------- TOUCH SWIPE for modal ----------
+        function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
+        function handleTouchEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 40) {
+                if (diff > 0) nextMedia(); else prevMedia();
+            }
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        function setupEventListeners() {
+            document.addEventListener('click', (e) => {
+                const item = e.target.closest('.gallery-item');
+                if (item) openModal(parseInt(item.dataset.index));
+            });
+            closeModal.addEventListener('click', closeModalFunc);
+            prevBtn.addEventListener('click', prevMedia);
+            nextBtn.addEventListener('click', nextMedia);
+            document.addEventListener('keydown', (e) => {
+                if (!modal.classList.contains('active')) return;
+                if (e.key === 'Escape') closeModalFunc();
+                if (e.key === 'ArrowLeft') prevMedia();
+                if (e.key === 'ArrowRight') nextMedia();
+            });
+            musicControl.addEventListener('click', toggleMusic);
+            modal.addEventListener('touchstart', handleTouchStart);
+            modal.addEventListener('touchend', handleTouchEnd);
+            window.addEventListener('resize', () => { setTimeout(drawConnectionStrings, 50); });
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModalFunc(); });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
